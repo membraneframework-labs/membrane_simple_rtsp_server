@@ -1,12 +1,12 @@
-defmodule Membrane.Template.Mixfile do
+defmodule Membrane.SimpleRTSPServer.Mixfile do
   use Mix.Project
 
   @version "0.1.0"
-  @github_url "https://github.com/membraneframework/membrane_template_plugin"
+  @github_url "https://github.com/membraneframework-labs/membrane_simple_rtsp_server"
 
   def project do
     [
-      app: :membrane_template_plugin,
+      app: :membrane_simple_rtsp_server,
       version: @version,
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -15,11 +15,11 @@ defmodule Membrane.Template.Mixfile do
       dialyzer: dialyzer(),
 
       # hex
-      description: "Template Plugin for Membrane Framework",
+      description: "Simple RTSP Server based on Membrane Framework",
       package: package(),
 
       # docs
-      name: "Membrane Template plugin",
+      name: "Membrane Simple RTSP Server",
       source_url: @github_url,
       docs: docs(),
       homepage_url: "https://membrane.stream"
@@ -38,6 +38,17 @@ defmodule Membrane.Template.Mixfile do
   defp deps do
     [
       {:membrane_core, "~> 1.0"},
+      {:membrane_rtsp,
+       github: "membraneframework/membrane_rtsp", branch: "server-ports-optional"},
+      # {:membrane_rtsp, "~> 0.9.0"},
+      {:membrane_rtp_plugin, "~> 0.29.0"},
+      {:membrane_rtp_h264_plugin, "~> 0.19.0"},
+      {:membrane_rtp_aac_plugin, "~> 0.9.0"},
+      {:membrane_file_plugin, "~> 0.17.0"},
+      {:membrane_mp4_plugin, "~> 0.35.0"},
+      {:membrane_h26x_plugin, "~> 0.10.0"},
+      {:membrane_udp_plugin, "~> 0.14.0"},
+      {:membrane_realtimer_plugin, "~> 0.9.0"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:dialyxir, ">= 0.0.0", only: :dev, runtime: false},
       {:credo, ">= 0.0.0", only: :dev, runtime: false}
@@ -74,7 +85,7 @@ defmodule Membrane.Template.Mixfile do
       extras: ["README.md", "LICENSE"],
       formatters: ["html"],
       source_ref: "v#{@version}",
-      nest_modules_by_prefix: [Membrane.Template]
+      nest_modules_by_prefix: [Membrane.SimpleRTSPServer]
     ]
   end
 end
