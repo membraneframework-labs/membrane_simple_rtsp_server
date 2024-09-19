@@ -23,38 +23,18 @@ defmodule Membrane.SimpleRTSPServer.Pipeline do
   @impl true
   def handle_child_notification({:new_tracks, tracks}, :mp4_demuxer, _ctx, state) do
     spec =
-      Enum.map(tracks, fn
-        {id, %Membrane.AAC{}} ->
-          get_child(:mp4_demuxer)
-          |> via_out(Pad.ref(:output, id))
-          |> child(Membrane.Debug.Sink)
+      [child(:rtp_session_bin, Membrane.RTP.SessionBin)] ++
+        Enum.map(tracks, fn
+          {id, %Membrane.AAC{}} ->
+            get_child(:mp4_demuxer)
+            |> via_out(Pad.ref(:output, id))
+            |> build_track(:audio, state.media_config)
 
-        {id, %Membrane.H264{}} ->
-          get_child(:mp4_demuxer)
-          |> via_out(Pad.ref(:output, id))
-          |> child(:parser, %Membrane.H264.Parser{
-            output_alignment: :nalu,
-            repeat_parameter_sets: true,
-            skip_until_keyframe: true,
-            output_stream_structure: :annexb
-          })
-          |> via_in(Pad.ref(:input, state.ssrc),
-            options: [payloader: Membrane.RTP.H264.Payloader]
-          )
-          |> child(:rtp, Membrane.RTP.SessionBin)
-          |> via_out(Pad.ref(:rtp_output, state.ssrc),
-            options: [
-              payload_type: state.pt,
-              clock_rate: state.clock_rate
-            ]
-          )
-          |> child(:realtimer, Membrane.Realtimer)
-          |> child(:udp_sink, %Membrane.UDP.Sink{
-            destination_address: state.client_ip,
-            destination_port_no: state.client_port,
-            local_socket: state.server_rtp_socket
-          })
-      end)
+          {id, %Membrane.H264{}} ->
+            get_child(:mp4_demuxer)
+            |> via_out(Pad.ref(:output, id))
+            |> build_track(:video, state.media_config)
+        end)
 
     {[spec: spec], state}
   end
@@ -65,7 +45,7 @@ defmodule Membrane.SimpleRTSPServer.Pipeline do
   end
 
   @impl true
-  def handle_element_end_of_stream(:udp_sink, :input, _ctx, state) do
+  def handle_element_end_of_stream({:udp_sink, :video}, :input, _ctx, state) do
     Process.sleep(50)
     :gen_tcp.close(state.socket)
     {[terminate: :normal], state}
@@ -74,5 +54,57 @@ defmodule Membrane.SimpleRTSPServer.Pipeline do
   @impl true
   def handle_element_end_of_stream(_child, _pad, _ctx, state) do
     {[], state}
+  end
+
+  defp build_track(builder, :audio, %{audio: config}) do
+    builder
+    |> child(:aac_parser, %Membrane.AAC.Parser{
+      out_encapsulation: :none,
+      output_config: :audio_specific_config
+    })
+    |> child(%Membrane.Debug.Filter{handle_stream_format: &IO.inspect(&1, label: "strfmt")})
+    |> via_in(Pad.ref(:input, config.ssrc),
+      options: [payloader: %Membrane.RTP.AAC.Payloader{frames_per_packet: 1, mode: :hbr}]
+    )
+    |> build_tail(:audio, config)
+  end
+
+  defp build_track(builder, :video, %{video: config}) do
+    builder
+    |> child(:h264_parser, %Membrane.H264.Parser{
+      output_alignment: :nalu,
+      repeat_parameter_sets: true,
+      skip_until_keyframe: true,
+      output_stream_structure: :annexb
+    })
+    |> via_in(Pad.ref(:input, config.ssrc),
+      options: [payloader: Membrane.RTP.H264.Payloader]
+    )
+    |> build_tail(:video, config)
+  end
+
+  defp build_track(builder, _type, _media_config) do
+    builder
+    |> child(Membrane.Debug.Sink)
+  end
+
+  defp build_tail(builder, type, config) do
+    config |> IO.inspect(label: type)
+
+    builder
+    |> get_child(:rtp_session_bin)
+    |> via_out(Pad.ref(:rtp_output, config.ssrc),
+      options: [
+        payload_type: config.pt,
+        clock_rate: config.clock_rate
+      ]
+    )
+    # |> child(%Membrane.Debug.Filter{handle_buffer: &IO.inspect(&1.pts, label: type)})
+    |> child({:realtimer, type}, Membrane.Realtimer)
+    |> child({:udp_sink, type}, %Membrane.UDP.Sink{
+      destination_address: config.client_address,
+      destination_port_no: config.client_port,
+      local_socket: config.rtp_socket
+    })
   end
 end

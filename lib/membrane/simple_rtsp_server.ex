@@ -9,7 +9,9 @@ defmodule Membrane.SimpleRTSPServer do
       handler: Membrane.SimpleRTSPServer.Handler,
       handler_config: %{mp4_path: mp4_path},
       port: rtsp_port,
-      address: address
+      address: address,
+      udp_rtp_port: 0,
+      udp_rtcp_port: 0
     )
   end
 end
