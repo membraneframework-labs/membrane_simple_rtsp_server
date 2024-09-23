@@ -99,7 +99,6 @@ defmodule Membrane.SimpleRTSPServer.Pipeline do
         clock_rate: config.clock_rate
       ]
     )
-    # |> child(%Membrane.Debug.Filter{handle_buffer: &IO.inspect(&1.pts, label: type)})
     |> child({:realtimer, type}, Membrane.Realtimer)
     |> child({:udp_sink, type}, %Membrane.UDP.Sink{
       destination_address: config.client_address,

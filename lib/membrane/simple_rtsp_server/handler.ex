@@ -81,17 +81,6 @@ defmodule Membrane.SimpleRTSPServer.Handler do
       media_config: media_config
     }
 
-    # arg = %{
-    # socket: state.socket,
-    # ssrc: media_context.ssrc,
-    # pt: @video_pt,
-    # clock_rate: @video_clock_rate,
-    # client_port: client_rtp_port,
-    # client_ip: media_context.address,
-    # server_rtp_socket: media_context.rtp_socket,
-    # mp4_path: state.mp4_path
-    # }
-
     {:ok, _sup_pid, pipeline_pid} =
       Membrane.SimpleRTSPServer.Pipeline.start_link(arg)
 
