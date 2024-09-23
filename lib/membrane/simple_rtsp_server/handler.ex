@@ -35,7 +35,7 @@ defmodule Membrane.SimpleRTSPServer.Handler do
     m=audio 0 RTP/AVP #{@audio_pt}
     a=control:audio
     a=rtpmap:#{@audio_pt} mpeg4-generic/#{@audio_clock_rate}/2
-    a=fmtp:#{@audio_pt} streamtype=5; profile-level-id=5; mode=AAC-hbr; config=#{@audio_specific_config}; sizeLength=13; indexLength=3;
+    a=fmtp:#{@audio_pt} streamtype=5; profile-level-id=5; mode=AAC-hbr; config=#{@audio_specific_config}; sizeLength=13; indexLength=3
     """
 
     response =
