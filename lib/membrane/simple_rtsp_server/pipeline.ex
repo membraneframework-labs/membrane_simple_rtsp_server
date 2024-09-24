@@ -62,7 +62,6 @@ defmodule Membrane.SimpleRTSPServer.Pipeline do
       out_encapsulation: :none,
       output_config: :audio_specific_config
     })
-    |> child(%Membrane.Debug.Filter{handle_stream_format: &IO.inspect(&1, label: "strfmt")})
     |> via_in(Pad.ref(:input, config.ssrc),
       options: [payloader: %Membrane.RTP.AAC.Payloader{frames_per_packet: 1, mode: :hbr}]
     )
@@ -89,8 +88,6 @@ defmodule Membrane.SimpleRTSPServer.Pipeline do
   end
 
   defp build_tail(builder, type, config) do
-    config |> IO.inspect(label: type)
-
     builder
     |> get_child(:rtp_session_bin)
     |> via_out(Pad.ref(:rtp_output, config.ssrc),

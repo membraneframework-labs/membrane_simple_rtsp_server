@@ -1,30 +1,39 @@
 # Membrane Template Plugin
 
-[![Hex.pm](https://img.shields.io/hexpm/v/membrane_template_plugin.svg)](https://hex.pm/packages/membrane_template_plugin)
-[![API Docs](https://img.shields.io/badge/api-docs-yellow.svg?style=flat)](https://hexdocs.pm/membrane_template_plugin)
-[![CircleCI](https://circleci.com/gh/membraneframework/membrane_template_plugin.svg?style=svg)](https://circleci.com/gh/membraneframework/membrane_template_plugin)
+[![Hex.pm](https://img.shields.io/hexpm/v/membrane_simple_rtsp_server.svg)](https://hex.pm/packages/membrane_simple_rtsp_server)
+[![API Docs](https://img.shields.io/badge/api-docs-yellow.svg?style=flat)](https://hexdocs.pm/membrane_simple_rtsp_server)
+[![CircleCI](https://circleci.com/gh/membraneframework/membrane_simple_rtsp_server.svg?style=svg)](https://circleci.com/gh/membraneframework/membrane_simple_rtsp_server)
 
-This repository contains a template for new plugins.
-
-Check out different branches for other flavors of this template.
-
-It's a part of the [Membrane Framework](https://membrane.stream).
+A Simple RTSP server that serves a MP4 file
 
 ## Installation
 
-The package can be installed by adding `membrane_template_plugin` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `membrane_simple_rtsp_server` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:membrane_template_plugin, "~> 0.1.0"}
+    {:membrane_simple_rtsp_server, "~> 0.1.0"}
   ]
 end
 ```
 
 ## Usage
 
-TODO
+To serve a MP4 file run the following:
+```elixir
+Membrane.SimpleRTSPServer.start_link("path/to/file.mp4", port: 30001)
+```
+
+To receive and immediately play the stream you can use a tool like `ffplay`:
+```sh
+ffplay rtsp://localhost:30001
+```
+
+To receive the mp4 and store it you can use a tool like [Boombox](https://github.com/membraneframework/boombox):
+```elixir
+Boombox.run(input: "rtsp://localhost:30001", output: "output.mp4")
+```
 
 ## Copyright and License
 

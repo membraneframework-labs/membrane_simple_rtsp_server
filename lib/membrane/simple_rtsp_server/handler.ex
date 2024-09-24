@@ -10,7 +10,6 @@ defmodule Membrane.SimpleRTSPServer.Handler do
   @video_clock_rate 90_000
   @audio_pt 97
   @audio_clock_rate 44_100
-  @audio_specific_config "1210"
 
   @impl true
   def init(config) do
@@ -26,6 +25,8 @@ defmodule Membrane.SimpleRTSPServer.Handler do
 
   @impl true
   def handle_describe(_req, state) do
+    asc = get_audio_specific_config(state.mp4_path)
+
     sdp = """
     v=0
     m=video 0 RTP/AVP #{@video_pt}
@@ -35,7 +36,7 @@ defmodule Membrane.SimpleRTSPServer.Handler do
     m=audio 0 RTP/AVP #{@audio_pt}
     a=control:audio
     a=rtpmap:#{@audio_pt} mpeg4-generic/#{@audio_clock_rate}/2
-    a=fmtp:#{@audio_pt} streamtype=5; profile-level-id=5; mode=AAC-hbr; config=#{@audio_specific_config}; sizeLength=13; indexLength=3
+    a=fmtp:#{@audio_pt} streamtype=5; profile-level-id=5; mode=AAC-hbr; config=#{Base.encode16(asc)}; sizeLength=13; indexLength=3
     """
 
     response =
@@ -99,4 +100,22 @@ defmodule Membrane.SimpleRTSPServer.Handler do
 
   @impl true
   def handle_closed_connection(_state), do: :ok
+
+  @spec get_audio_specific_config(String.t()) :: binary()
+  def get_audio_specific_config(mp4_path) do
+    {container, ""} = File.read!(mp4_path) |> Membrane.MP4.Container.parse!()
+
+    container[:moov].children
+    |> Keyword.get_values(:trak)
+    |> Enum.map(& &1.children[:mdia].children[:minf].children[:stbl].children[:stsd])
+    |> Enum.find_value(fn
+      %{children: [{:mp4a, mp4a_box}]} ->
+        mp4a_box.children[:esds].fields.elementary_stream_descriptor
+
+      _other ->
+        false
+    end)
+    |> Membrane.AAC.Parser.Esds.parse_esds()
+    |> Membrane.AAC.Parser.AudioSpecificConfig.generate_audio_specific_config()
+  end
 end
