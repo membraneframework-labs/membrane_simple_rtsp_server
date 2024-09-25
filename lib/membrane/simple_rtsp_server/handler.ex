@@ -76,11 +76,13 @@ defmodule Membrane.SimpleRTSPServer.Handler do
         {key, config}
       end)
 
-    arg = %{
-      socket: state.socket,
-      mp4_path: state.mp4_path,
-      media_config: media_config
-    }
+    arg =
+      %{
+        socket: state.socket,
+        mp4_path: state.mp4_path,
+        realtime: state.realtime,
+        media_config: media_config
+      }
 
     {:ok, _sup_pid, pipeline_pid} =
       Membrane.SimpleRTSPServer.Pipeline.start_link(arg)
