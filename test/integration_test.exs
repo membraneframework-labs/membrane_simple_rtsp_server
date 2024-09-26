@@ -6,7 +6,7 @@ defmodule Membrane.SimpleRTSPServer.IntegrationTest do
     input_path = "test/fixtures/input.mp4"
 
     output_path = Path.join(tmp_dir, "output.mp4")
-    Membrane.SimpleRTSPServer.start_link(input_path, port: 40_001, realtime: true)
+    Membrane.SimpleRTSPServer.start_link(input_path, port: 40_001)
     Process.sleep(50)
     Boombox.run(input: "rtsp://localhost:40001/", output: output_path)
 

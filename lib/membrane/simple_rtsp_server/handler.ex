@@ -80,7 +80,6 @@ defmodule Membrane.SimpleRTSPServer.Handler do
       %{
         socket: state.socket,
         mp4_path: state.mp4_path,
-        realtime: state.realtime,
         media_config: media_config
       }
 
