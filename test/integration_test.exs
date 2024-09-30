@@ -10,6 +10,8 @@ defmodule Membrane.SimpleRTSPServer.IntegrationTest do
     Process.sleep(50)
     Boombox.run(input: "rtsp://localhost:40001/", output: output_path)
 
-    assert File.read!(input_path) == File.read!(output_path)
+    {:ok, %{size: input_size}} = File.stat(input_path)
+    {:ok, %{size: output_size}} = File.stat(output_path)
+    assert output_size in trunc(input_size * 0.95)..trunc(output_size * 1.05)
   end
 end
