@@ -52,7 +52,7 @@ defmodule Membrane.SimpleRTSPServer.Mixfile do
       {:ex_sdp, github: "membraneframework/ex_sdp", branch: "aac-fmtp", override: true},
       {:membrane_udp_plugin, "~> 0.14.0"},
       {:membrane_realtimer_plugin, "~> 0.9.0"},
-      {:boombox, "~> 0.1.0", only: :test},
+      {:boombox, github: "membraneframework/boombox", branch: "fix-rtsp-track", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:dialyxir, ">= 0.0.0", only: :dev, runtime: false},
       {:credo, ">= 0.0.0", only: :dev, runtime: false}
