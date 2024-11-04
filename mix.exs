@@ -45,7 +45,7 @@ defmodule Membrane.SimpleRTSPServer.Mixfile do
       {:membrane_file_plugin, "~> 0.17.0"},
       {:membrane_mp4_plugin, "~> 0.35.0"},
       {:membrane_h26x_plugin, "~> 0.10.0"},
-      {:membrane_aac_plugin, "~> 0.19.0", override: true},
+      {:membrane_aac_plugin, "~> 0.19.0"},
       {:ex_sdp, "~> 1.1"},
       {:membrane_udp_plugin, "~> 0.14.0"},
       {:membrane_realtimer_plugin, "~> 0.9.0"},
