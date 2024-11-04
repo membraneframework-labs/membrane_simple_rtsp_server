@@ -38,10 +38,7 @@ defmodule Membrane.SimpleRTSPServer.Mixfile do
   defp deps do
     [
       {:membrane_core, "~> 1.0"},
-      {:membrane_rtsp_plugin,
-       github: "membraneframework-labs/membrane_rtsp_plugin",
-       branch: "audio-depayloading",
-       override: true},
+      {:membrane_rtsp_plugin, "~> 0.5.0"},
       {:membrane_rtp_plugin, "~> 0.29.0"},
       {:membrane_rtp_h264_plugin, "~> 0.19.0"},
       {:membrane_rtp_aac_plugin, "~> 0.9.0"},

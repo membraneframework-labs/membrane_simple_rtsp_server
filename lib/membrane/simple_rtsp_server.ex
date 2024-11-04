@@ -6,8 +6,7 @@ defmodule Membrane.SimpleRTSPServer do
   @spec start_link(String.t(),
           port: :inet.port_number(),
           address: :inet.ip4_address()
-        ) ::
-          GenServer.on_start()
+        ) :: GenServer.on_start()
   def start_link(mp4_path, opts) do
     Membrane.RTSP.Server.start_link(
       handler: Membrane.SimpleRTSPServer.Handler,
