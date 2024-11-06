@@ -13,7 +13,7 @@ The package can be installed by adding `membrane_simple_rtsp_server` to your lis
 ```elixir
 def deps do
   [
-    {:membrane_simple_rtsp_server, "~> 0.1.0"}
+    {:membrane_simple_rtsp_server, "~> 0.1.1"}
   ]
 end
 ```
