@@ -49,7 +49,7 @@ defmodule Membrane.SimpleRTSPServer.Mixfile do
       {:ex_sdp, "~> 1.1"},
       {:membrane_udp_plugin, "~> 0.14.0"},
       {:membrane_realtimer_plugin, "~> 0.9.0"},
-      {:boombox, github: "membraneframework/boombox", branch: "fix-rtsp-track", only: :test},
+      {:boombox, github: "membraneframework/boombox", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:dialyxir, ">= 0.0.0", only: :dev, runtime: false},
       {:credo, ">= 0.0.0", only: :dev, runtime: false}
