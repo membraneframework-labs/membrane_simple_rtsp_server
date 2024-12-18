@@ -1,8 +1,8 @@
-# Membrane Template Plugin
+# Membrane Simple RTSP Server
 
 [![Hex.pm](https://img.shields.io/hexpm/v/membrane_simple_rtsp_server.svg)](https://hex.pm/packages/membrane_simple_rtsp_server)
 [![API Docs](https://img.shields.io/badge/api-docs-yellow.svg?style=flat)](https://hexdocs.pm/membrane_simple_rtsp_server)
-[![CircleCI](https://circleci.com/gh/membraneframework/membrane_simple_rtsp_server.svg?style=svg)](https://circleci.com/gh/membraneframework/membrane_simple_rtsp_server)
+[![CircleCI](https://circleci.com/gh/membraneframework-labs/membrane_simple_rtsp_server.svg?style=svg)](https://circleci.com/gh/membraneframework-labs/membrane_simple_rtsp_server)
 
 A Simple RTSP server that serves a MP4 file
 

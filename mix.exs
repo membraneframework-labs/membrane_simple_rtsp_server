@@ -39,9 +39,10 @@ defmodule Membrane.SimpleRTSPServer.Mixfile do
     [
       {:membrane_core, "~> 1.0"},
       {:membrane_rtsp, "~> 0.10.1"},
-      {:membrane_rtp_plugin, "~> 0.29.0"},
-      {:membrane_rtp_h264_plugin, "~> 0.19.0"},
-      {:membrane_rtp_aac_plugin, "~> 0.9.0"},
+      {:membrane_rtp_plugin,
+       github: "membraneframework/membrane_rtp_plugin", branch: "rtp-muxer", override: true},
+      {:membrane_rtp_h264_plugin, "~> 0.20.0"},
+      {:membrane_rtp_aac_plugin, "~> 0.9.1"},
       {:membrane_file_plugin, "~> 0.17.0"},
       {:membrane_mp4_plugin, "~> 0.35.0"},
       {:membrane_h26x_plugin, "~> 0.10.0"},
@@ -49,7 +50,7 @@ defmodule Membrane.SimpleRTSPServer.Mixfile do
       {:ex_sdp, "~> 1.1"},
       {:membrane_udp_plugin, "~> 0.14.0"},
       {:membrane_realtimer_plugin, "~> 0.9.0"},
-      {:boombox, github: "membraneframework/boombox", only: :test},
+      {:boombox, github: "membraneframework/boombox", branch: "rtp-input", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:dialyxir, ">= 0.0.0", only: :dev, runtime: false},
       {:credo, ">= 0.0.0", only: :dev, runtime: false}
