@@ -39,8 +39,7 @@ defmodule Membrane.SimpleRTSPServer.Mixfile do
     [
       {:membrane_core, "~> 1.0"},
       {:membrane_rtsp, "~> 0.10.1"},
-      {:membrane_rtp_plugin,
-       github: "membraneframework/membrane_rtp_plugin", branch: "rtp-muxer", override: true},
+      {:membrane_rtp_plugin, "~> 0.30.0"},
       {:membrane_rtp_h264_plugin, "~> 0.20.0"},
       {:membrane_rtp_aac_plugin, "~> 0.9.1"},
       {:membrane_file_plugin, "~> 0.17.0"},
