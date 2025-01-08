@@ -1,7 +1,7 @@
 defmodule Membrane.SimpleRTSPServer.Mixfile do
   use Mix.Project
 
-  @version "0.1.2"
+  @version "0.1.3"
   @github_url "https://github.com/membraneframework-labs/membrane_simple_rtsp_server"
 
   def project do
