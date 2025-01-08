@@ -1,7 +1,7 @@
 defmodule Membrane.SimpleRTSPServer.Mixfile do
   use Mix.Project
 
-  @version "0.1.2"
+  @version "0.1.3"
   @github_url "https://github.com/membraneframework-labs/membrane_simple_rtsp_server"
 
   def project do
@@ -39,9 +39,9 @@ defmodule Membrane.SimpleRTSPServer.Mixfile do
     [
       {:membrane_core, "~> 1.0"},
       {:membrane_rtsp, "~> 0.10.1"},
-      {:membrane_rtp_plugin, "~> 0.29.0"},
-      {:membrane_rtp_h264_plugin, "~> 0.19.0"},
-      {:membrane_rtp_aac_plugin, "~> 0.9.0"},
+      {:membrane_rtp_plugin, "~> 0.30.0"},
+      {:membrane_rtp_h264_plugin, "~> 0.20.0"},
+      {:membrane_rtp_aac_plugin, "~> 0.9.1"},
       {:membrane_file_plugin, "~> 0.17.0"},
       {:membrane_mp4_plugin, "~> 0.35.0"},
       {:membrane_h26x_plugin, "~> 0.10.0"},
@@ -49,7 +49,6 @@ defmodule Membrane.SimpleRTSPServer.Mixfile do
       {:ex_sdp, "~> 1.1"},
       {:membrane_udp_plugin, "~> 0.14.0"},
       {:membrane_realtimer_plugin, "~> 0.9.0"},
-      {:boombox, github: "membraneframework/boombox", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:dialyxir, ">= 0.0.0", only: :dev, runtime: false},
       {:credo, ">= 0.0.0", only: :dev, runtime: false}
