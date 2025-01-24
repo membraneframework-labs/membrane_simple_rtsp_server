@@ -57,7 +57,6 @@ defmodule Membrane.SimpleRTSPServer.Pipeline do
     tracks_playing = List.delete(state.tracks_playing, media_type)
 
     if tracks_playing == [] do
-      Process.sleep(50)
       :gen_tcp.close(state.socket)
       {[terminate: :normal], %{state | tracks_playing: tracks_playing}}
     else
