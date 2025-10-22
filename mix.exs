@@ -1,7 +1,7 @@
 defmodule Membrane.SimpleRTSPServer.Mixfile do
   use Mix.Project
 
-  @version "0.1.5"
+  @version "0.1.6"
   @github_url "https://github.com/membraneframework-labs/membrane_simple_rtsp_server"
 
   def project do
@@ -39,7 +39,7 @@ defmodule Membrane.SimpleRTSPServer.Mixfile do
     [
       {:membrane_core, "~> 1.0"},
       {:membrane_rtsp, "~> 0.10.1"},
-      {:membrane_rtp_plugin, "~> 0.30.0"},
+      {:membrane_rtp_plugin, "~> 0.31.0"},
       {:membrane_rtp_h264_plugin, "~> 0.20.0"},
       {:membrane_rtp_aac_plugin, "~> 0.9.1"},
       {:membrane_file_plugin, "~> 0.17.0"},
