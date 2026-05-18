@@ -91,9 +91,9 @@ defmodule Membrane.SimpleRTSPServer.Pipeline do
     |> build_tail(:video, config)
   end
 
-  defp build_track(builder, _type, _media_config) do
+  defp build_track(builder, type, _media_config) do
     builder
-    |> child(Membrane.Debug.Sink)
+    |> child({:sink, type}, Membrane.Debug.Sink)
   end
 
   defp build_tail(builder, type, config) do
@@ -103,7 +103,7 @@ defmodule Membrane.SimpleRTSPServer.Pipeline do
     )
     |> child({:rtp_muxer, type}, Membrane.RTP.Muxer)
     |> child({:realtimer, type}, Membrane.Realtimer)
-    |> child({:udp_sink, type}, %Membrane.UDP.Sink{
+    |> child({:sink, type}, %Membrane.UDP.Sink{
       destination_address: config.client_address,
       destination_port_no: config.client_port,
       local_socket: config.rtp_socket
