@@ -53,7 +53,7 @@ defmodule Membrane.SimpleRTSPServer.Pipeline do
   end
 
   @impl true
-  def handle_element_end_of_stream({:udp_sink, media_type}, :input, _ctx, state) do
+  def handle_element_end_of_stream({:sink, media_type}, :input, _ctx, state) do
     tracks_playing = List.delete(state.tracks_playing, media_type)
 
     if tracks_playing == [] do
