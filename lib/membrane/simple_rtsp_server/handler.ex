@@ -6,6 +6,7 @@ defmodule Membrane.SimpleRTSPServer.Handler do
   require Membrane.Logger
 
   alias Membrane.RTSP.Response
+
   @video_pt 96
   @video_clock_rate 90_000
   @audio_pt 97
@@ -27,17 +28,34 @@ defmodule Membrane.SimpleRTSPServer.Handler do
   def handle_describe(_req, state) do
     asc = get_audio_specific_config(state.mp4_path)
 
-    sdp = """
-    v=0
-    m=video 0 RTP/AVP #{@video_pt}
-    a=control:video
-    a=rtpmap:#{@video_pt} H264/#{@video_clock_rate}
-    a=fmtp:#{@video_pt} packetization-mode=1
-    m=audio 0 RTP/AVP #{@audio_pt}
-    a=control:audio
-    a=rtpmap:#{@audio_pt} mpeg4-generic/#{@audio_clock_rate}/2
-    a=fmtp:#{@audio_pt} streamtype=5; profile-level-id=5; mode=AAC-hbr; config=#{Base.encode16(asc)}; sizeLength=13; indexLength=3
-    """
+    audio_media =
+      if asc do
+        [
+          "m=audio 0 RTP/AVP #{@audio_pt}",
+          "a=control:audio",
+          "a=rtpmap:#{@audio_pt} mpeg4-generic/#{@audio_clock_rate}/2",
+          "a=fmtp:#{@audio_pt} streamtype=5; profile-level-id=1; mode=AAC-hbr; config=#{Base.encode16(asc)}; sizeLength=13; indexLength=3; indexDeltaLength=3"
+        ]
+      else
+        []
+      end
+
+    sdp =
+      [
+        "v=0",
+        "o=- 0 0 IN IP4 127.0.0.1",
+        "s=Stream",
+        "c=IN IP4 0.0.0.0",
+        "t=0 0",
+        "a=control:*",
+        "m=video 0 RTP/AVP #{@video_pt}",
+        "a=control:video",
+        "a=rtpmap:#{@video_pt} H264/#{@video_clock_rate}",
+        "a=fmtp:#{@video_pt} packetization-mode=1"
+      ]
+      |> Enum.concat(audio_media)
+      |> Enum.join("\r\n")
+      |> Kernel.<>("\r\n")
 
     response =
       Response.new(200)
@@ -86,7 +104,18 @@ defmodule Membrane.SimpleRTSPServer.Handler do
     {:ok, _sup_pid, pipeline_pid} =
       Membrane.SimpleRTSPServer.Pipeline.start_link(arg)
 
-    {Response.new(200), %{state | pipeline_pid: pipeline_pid}}
+    rtp_info_header =
+      Enum.map_join(
+        configured_media_context,
+        ",",
+        fn {control_path, _context} -> "url=#{control_path};seq=0;rtptime=0" end
+      )
+
+    response =
+      Response.new(200)
+      |> Response.with_header("RTP-Info", rtp_info_header)
+
+    {response, %{state | pipeline_pid: pipeline_pid}}
   end
 
   @impl true
@@ -102,21 +131,26 @@ defmodule Membrane.SimpleRTSPServer.Handler do
   @impl true
   def handle_closed_connection(_state), do: :ok
 
-  @spec get_audio_specific_config(String.t()) :: binary()
+  @spec get_audio_specific_config(String.t()) :: binary() | nil
   def get_audio_specific_config(mp4_path) do
     {container, ""} = File.read!(mp4_path) |> Membrane.MP4.Container.parse!()
 
-    container[:moov].children
-    |> Keyword.get_values(:trak)
-    |> Enum.map(& &1.children[:mdia].children[:minf].children[:stbl].children[:stsd])
-    |> Enum.find_value(fn
-      %{children: [{:mp4a, mp4a_box}]} ->
-        mp4a_box.children[:esds].fields.elementary_stream_descriptor
+    esds_data =
+      container[:moov].children
+      |> Keyword.get_values(:trak)
+      |> Enum.map(& &1.children[:mdia].children[:minf].children[:stbl].children[:stsd])
+      |> Enum.find_value(fn
+        %{children: [{:mp4a, mp4a_box}]} ->
+          mp4a_box.children[:esds].fields.elementary_stream_descriptor
 
-      _other ->
-        false
-    end)
-    |> Membrane.AAC.Parser.Esds.parse_esds()
-    |> Membrane.AAC.Parser.AudioSpecificConfig.generate_audio_specific_config()
+        _other ->
+          false
+      end)
+
+    if esds_data do
+      esds_data
+      |> Membrane.AAC.Parser.Esds.parse_esds()
+      |> Membrane.AAC.Parser.AudioSpecificConfig.generate_audio_specific_config()
+    end
   end
 end

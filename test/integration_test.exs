@@ -8,7 +8,10 @@ defmodule Membrane.SimpleRTSPServer.IntegrationTest do
     output_path = Path.join(tmp_dir, "output.mp4")
     Membrane.SimpleRTSPServer.start_link(input_path, port: 40_001)
     Process.sleep(50)
-    System.shell("ffmpeg -i rtsp://localhost:40001 -c:v copy -c:a copy #{output_path}")
+
+    System.shell(
+      "ffmpeg -i rtsp://localhost:40001 -c:v copy -copyinkf:a -c:a copy #{output_path}"
+    )
 
     {:ok, %{size: input_size}} = File.stat(input_path)
     {:ok, %{size: output_size}} = File.stat(output_path)

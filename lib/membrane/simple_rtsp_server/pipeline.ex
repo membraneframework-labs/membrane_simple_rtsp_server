@@ -99,7 +99,13 @@ defmodule Membrane.SimpleRTSPServer.Pipeline do
   defp build_tail(builder, type, config) do
     builder
     |> via_in(:input,
-      options: [ssrc: config.ssrc, payload_type: config.pt, clock_rate: config.clock_rate]
+      options: [
+        ssrc: config.ssrc,
+        initial_sequence_number: 0,
+        initial_timestamp: 0,
+        payload_type: config.pt,
+        clock_rate: config.clock_rate
+      ]
     )
     |> child({:rtp_muxer, type}, Membrane.RTP.Muxer)
     |> child({:realtimer, type}, Membrane.Realtimer)
