@@ -53,7 +53,7 @@ defmodule Membrane.SimpleRTSPServer.Pipeline do
   end
 
   @impl true
-  def handle_element_end_of_stream({:udp_sink, media_type}, :input, _ctx, state) do
+  def handle_element_end_of_stream({:sink, media_type}, :input, _ctx, state) do
     tracks_playing = List.delete(state.tracks_playing, media_type)
 
     if tracks_playing == [] do
@@ -91,19 +91,25 @@ defmodule Membrane.SimpleRTSPServer.Pipeline do
     |> build_tail(:video, config)
   end
 
-  defp build_track(builder, _type, _media_config) do
+  defp build_track(builder, type, _media_config) do
     builder
-    |> child(Membrane.Debug.Sink)
+    |> child({:sink, type}, Membrane.Debug.Sink)
   end
 
   defp build_tail(builder, type, config) do
     builder
     |> via_in(:input,
-      options: [ssrc: config.ssrc, payload_type: config.pt, clock_rate: config.clock_rate]
+      options: [
+        ssrc: config.ssrc,
+        initial_sequence_number: 0,
+        initial_timestamp: 0,
+        payload_type: config.pt,
+        clock_rate: config.clock_rate
+      ]
     )
     |> child({:rtp_muxer, type}, Membrane.RTP.Muxer)
     |> child({:realtimer, type}, Membrane.Realtimer)
-    |> child({:udp_sink, type}, %Membrane.UDP.Sink{
+    |> child({:sink, type}, %Membrane.UDP.Sink{
       destination_address: config.client_address,
       destination_port_no: config.client_port,
       local_socket: config.rtp_socket
