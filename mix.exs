@@ -1,7 +1,7 @@
 defmodule Membrane.SimpleRTSPServer.Mixfile do
   use Mix.Project
 
-  @version "0.1.6"
+  @version "0.1.7"
   @github_url "https://github.com/membraneframework-labs/membrane_simple_rtsp_server"
 
   def project do
@@ -39,16 +39,9 @@ defmodule Membrane.SimpleRTSPServer.Mixfile do
     [
       {:membrane_core, "~> 1.0"},
       {:membrane_rtsp, "~> 0.10.1"},
-      # {:membrane_rtp_plugin, "~> 0.31.0"},
-      {:membrane_rtp_plugin,
-       github: "membraneframework/membrane_rtp_plugin",
-       branch: "initial-seq-timestamp-options",
-       override: true},
-      # {:membrane_rtp_plugin, path: "../membrane_rtp_plugin/", override: true},
+      {:membrane_rtp_plugin, "~> 0.31.3"},
       {:membrane_rtp_h264_plugin, "~> 0.20.0"},
-      # {:membrane_rtp_aac_plugin, "~> 0.9.1"},
-      {:membrane_rtp_aac_plugin,
-       github: "membraneframework/membrane_rtp_aac_plugin", branch: "set-marker", override: true},
+      {:membrane_rtp_aac_plugin, "~> 0.9.2"},
       {:membrane_file_plugin, "~> 0.17.0"},
       {:membrane_mp4_plugin, "~> 0.36.0"},
       {:membrane_h26x_plugin, "~> 0.10.0"},
